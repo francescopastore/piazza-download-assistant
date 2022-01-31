@@ -6,9 +6,11 @@
 //   });
 // });
 
-browser.runtime.onMessage.addListener(function () {
+import store from "./store";
+
+browser.runtime.onMessage.addListener(function (request) {
   console.log("Hello from the background");
-  browser.tabs.executeScript({
-    file: "content-script.js",
-  });
+  console.log(request);
+  console.log(request.payload);
+  store.commit("setError", "TESTTTTTTTTTT");
 });

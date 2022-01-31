@@ -1,2 +1,8 @@
-console.log("Hello from the content-script");
-console.log(browser.runtime.getURL());
+const url = window.location.href;
+
+if (url != "") {
+  browser.runtime.sendMessage({
+    type: "ERROR",
+    payload: "BAD_URL",
+  });
+}
