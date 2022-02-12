@@ -40,11 +40,31 @@ function parsePage() {
       .find("h2")
       .first()
       .text();
+    const url = $(e).attr("href");
+
+    // var xhr = new XMLHttpRequest();
+    // let dimension = "";
+    // xhr.open("HEAD", "https://piazza.com" + url, true);
+    // xhr.onload = function () {
+    //   if (xhr.readyState === 4) {
+    //     if (xhr.status === 200) {
+    //       dimension = xhr.responseText;
+    //     } else {
+    //       console.error(xhr.statusText);
+    //     }
+    //   }
+    // };
+    // xhr.onerror = function () {
+    //   console.error(xhr.statusText);
+    // };
+    // xhr.send(null);
 
     data.push({
       title: $(e).text(),
-      url: $(e).attr("href"),
+      url: url,
       section: section,
+      dimension: 1,
+      gen: "https://piazza.com" + url,
     });
   });
 
