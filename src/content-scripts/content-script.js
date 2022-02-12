@@ -12,10 +12,15 @@ async function main() {
     return;
   }
 
-  const data = parsePage();
+  const cookie = await browser.runtime.sendMessage({
+    type: "GET_COOKIE",
+    payload: "",
+  });
+
+  const data = parsePage(cookie);
 
   await browser.runtime.sendMessage({
-    type: "DONE",
+    type: "RESULT",
     payload: data,
   });
 }
@@ -26,7 +31,7 @@ function isUrlValid() {
   return regex.test(url);
 }
 
-function parsePage() {
+function parsePage(cookie) {
   const page = document.documentElement.outerHTML;
   const dom = htmlparser2.parseDocument(page);
   const $ = cheerio.load(dom);
@@ -35,38 +40,45 @@ function parsePage() {
 
   $('[id^="resourceLink"]').each((_, e) => {
     const id = $(e).attr("id");
+    const path = $(e).attr("href");
+    const url = "https://piazza.com" + url;
     const section = $("#" + id)
       .closest('[id^="section_overview_"]')
       .find("h2")
       .first()
       .text();
-    const url = $(e).attr("href");
-
-    // var xhr = new XMLHttpRequest();
-    // let dimension = "";
-    // xhr.open("HEAD", "https://piazza.com" + url, true);
-    // xhr.onload = function () {
-    //   if (xhr.readyState === 4) {
-    //     if (xhr.status === 200) {
-    //       dimension = xhr.responseText;
-    //     } else {
-    //       console.error(xhr.statusText);
-    //     }
-    //   }
-    // };
-    // xhr.onerror = function () {
-    //   console.error(xhr.statusText);
-    // };
-    // xhr.send(null);
 
     data.push({
       title: $(e).text(),
-      url: url,
+      path: path,
       section: section,
-      dimension: 1,
-      gen: "https://piazza.com" + url,
+      type: readResourceType(url, cookie),
+      url: url,
     });
   });
 
   return data;
+}
+
+function readResourceType(url, cookie) {
+  var xhr = new XMLHttpRequest();
+  let type = "";
+
+  xhr.open("HEAD", url, true);
+  xhr.setRequestHeader("Cookie", cookie);
+
+  xhr.onload = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      type = xhr.getResponseHeader("Content-Type");
+      console.log(cookie);
+    }
+  };
+
+  xhr.onerror = function () {
+    console.log(xhr.statusText);
+  };
+
+  xhr.send(null);
+
+  return type;
 }
