@@ -8,7 +8,3 @@ browser.runtime.onMessage
   })
   .then(() => {})
   .catch((e) => console.error(e));
-
-browser.pageAction.onClicked.addListener((tab) => {
-  browser.pageAction.hide(tab.id);
-});
