@@ -1,7 +1,8 @@
 <template>
   <div>
     <hello-world /><br />
-    {{ test }}
+    <p>type: {{ message.type }}</p>
+    <p>payload: {{ message.payload }}</p>
   </div>
 </template>
 
@@ -17,8 +18,8 @@ export default {
     });
   },
   computed: {
-    test() {
-      return this.$store.state.error;
+    message() {
+      return this.$store.state.message;
     },
   },
 };

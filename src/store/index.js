@@ -7,12 +7,16 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   plugins: [VuexWebExtensions()],
   state: {
-    error: "TEST",
+    message: {
+      type: "",
+      payload: {},
+    },
     data: {},
   },
   mutations: {
-    setError(state, payload) {
-      state.error = payload;
+    setMessage(state, payload) {
+      state.message.type = payload.type;
+      state.message.payload = payload.payload;
     },
   },
   actions: {},
